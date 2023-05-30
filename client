@@ -1,0 +1,43 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+import java.util.Scanner;
+
+
+public class client21s21218 implements Runnable 
+{
+     public void run()
+     {
+         try
+         {
+             Socket ms=new Socket("localhost",5000);
+             Scanner sc=new Scanner(System.in);
+             System.out.println("Enter Baverage code");
+             int code=sc.nextInt();
+             System.out.println("Enter num of cups");
+             double numc=sc.nextDouble();
+             
+             DataOutputStream dos=new DataOutputStream(ms.getOutputStream());
+             dos.writeInt(code);
+             dos.writeDouble(numc);
+             dos.flush();
+             
+             
+             DataInputStream dis=new DataInputStream(ms.getInputStream());
+             int mb=dis.readInt();
+             String bm=dis.readUTF();
+             double pm=dis.readDouble();
+             double sm=dis.readDouble();
+             
+             System.out.println("code"+mb);
+             System.out.println("name"+bm);
+             System.out.println("sales return is"+pm);
+             System.out.println("price"+sm);
+         }
+         catch(Exception e)
+         {
+             System.out.println(e);
+         }
+     }
+     
+}
