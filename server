@@ -1,0 +1,78 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+ public class data implements Runnable
+{
+    public  void run()
+    {
+        try
+        {
+            String host="jdbc:derby://localhost:1527/ShaimaDB2304";
+            String un="sheem304";
+            String pass="Shaima9351";
+            Connection con=DriverManager.getConnection(host, un, pass);
+            ServerSocket ss = new ServerSocket(5000);
+            System.out.println("Connection is ready");
+            
+            while(true)
+            {
+                Socket ms=ss.accept();
+                
+                DataInputStream dis = new DataInputStream(ms.getInputStream());
+                int code = dis. readInt();
+                double numc = dis.readDouble();
+                System.out.println("code"+code);
+                System.out.println("number of cups"+numc);
+                
+                DataOutputStream dos=new DataOutputStream(ms.getOutputStream());
+                double tp = 0;
+                dos.writeDouble(tp);
+                double worth = 0;
+                dos.writeDouble(worth);
+                
+                Statement smt=con.createStatement();
+                String getvals=("select*from code"+code);
+                smt.execute(un);
+                ResultSet rs=smt.getResultSet();
+                
+                if(rs.next())
+                {
+                    double temp_pnt = rs.getDouble("code");
+                    double temp_m_val = rs.getDouble("price");
+                    double r1=temp_pnt+tp;
+                    double r2=temp_m_val+worth;
+                    dos.writeDouble(r1);
+                    dos.writeDouble(r2);
+                    
+                   
+                } 
+                dos.flush();
+                dos.close();
+            }
+        }
+        catch(SQLException e)
+        {
+            System.out.println(e);
+    }   catch (IOException ex) {
+            Logger.getLogger(data.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    @Override
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void readInt() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+}
